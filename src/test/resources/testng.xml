@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="iec61850 general test suite" verbose="1"  thread-count="1"  annotations="JDK" parallel="tests">
+    <test name="General # 1" >
+        <parameter name = "host" value="192.168.1.223"/>
+        <parameter name = "port" value="8081"/>
+        <classes>
+            <class name="ConsoleClient850Test"/>
+        </classes>
+    </test>
+</suite>
