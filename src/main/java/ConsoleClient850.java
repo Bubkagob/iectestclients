@@ -1,16 +1,45 @@
+import java.util.Collection;
 import org.openmuc.openiec61850.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.openmuc.openiec61850.internal.cli.ActionException;
 
 class ConsoleClient850 {
 
   private static volatile ClientAssociation association;
   private static ServerModel serverModel;
+  private static Report report;
 
   ServerModel getServerModel() {
     return serverModel;
+  }
+
+  static Report getReport() {
+    return report;
+  }
+
+  boolean enableReport(String reference) {
+    System.out.println("Enabling Report!");
+    Urcb urcb = serverModel.getUrcb(reference);
+    if (urcb == null) {
+      Brcb brcb = serverModel.getBrcb(reference);
+      if (brcb != null) {
+        try {
+          association.enableReporting(brcb);
+          System.out.println(brcb.getRptEna());
+          return true;
+        } catch (Exception ex) {
+          System.out.println(ex);
+        }
+
+        return true;
+      }
+      return false;
+    }
+
+    return true;
   }
 
   boolean retrieveServerModelFromFile(String sclFilePath) {
@@ -26,22 +55,21 @@ class ConsoleClient850 {
     return true;
   }
 
-  boolean retrieveServerModelFromServer() {
+  void retrieveServerModelFromServer() {
     try {
       serverModel = association.retrieveModel();
     } catch (ServiceError e) {
       System.out.println("Service error: " + e.getMessage());
-      return false;
+      return;
     } catch (IOException e) {
       System.out.println("Fatal error: " + e.getMessage());
-      return false;
+      return;
     }
 
     System.out.println("successfully read model from server");
-    return true;
   }
 
-  FcModelNode getFcModelNode(String reference, String fcString)  {
+  private FcModelNode getFcModelNode(String reference, String fcString) {
 
     Fc fc = Fc.fromString(fcString);
     if (fc == null) {
@@ -49,7 +77,8 @@ class ConsoleClient850 {
     }
     ModelNode modelNode = serverModel.findModelNode(reference, Fc.fromString(fcString));
     if (modelNode == null) {
-      System.out.println("A model node with the given reference and functional constraint could not be found.");
+      System.out.println(
+          "A model node with the given reference and functional constraint could not be found.");
     }
 
     if (!(modelNode instanceof FcModelNode)) {
@@ -84,8 +113,7 @@ class ConsoleClient850 {
     return bdaBool.getValue();
   }
 
-
-  Object readFloat (String variable, String fcString) {
+  Object readFloat(String variable, String fcString) {
 
     Fc fc = Fc.fromString(fcString);
 
@@ -103,20 +131,16 @@ class ConsoleClient850 {
       System.out.println("Fatal error: " + e.getMessage());
     }
 
-    if (fcModelNode instanceof BdaInt128){
+    if (fcModelNode instanceof BdaInt128) {
       BdaInt128 bdaInt128 = (BdaInt128) fcModelNode;
       return bdaInt128.getValue();
     } else if (fcModelNode instanceof BdaFloat32) {
       BdaFloat32 bdaFloat32 = (BdaFloat32) fcModelNode;
       return bdaFloat32.getFloat();
-    }
-    else
-    {
+    } else {
       return 0.0f;
     }
   }
-
-
 
   void connect(String host) throws UnknownHostException {
     ClientSap clientSap = new ClientSap();
@@ -146,10 +170,13 @@ class ConsoleClient850 {
   private static class EventListener implements ClientEventListener {
 
     @Override
-    public void newReport(Report report) {
+    public void newReport(Report r) {
       System.out.println("\n----------------");
       System.out.println("Received report: ");
-      System.err.println(report);
+      System.err.println(r.getEntryId());
+      System.err.println(r.getSqNum());
+      System.err.println(r.getDataSetRef());
+      report = r;
       System.out.println("------------------");
     }
 
