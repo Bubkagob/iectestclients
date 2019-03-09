@@ -4,43 +4,21 @@ import java.util.Random;
 import org.json.JSONObject;
 import java.net.UnknownHostException;
 
-public class MultipleClients850Test {
+public class RudeDisconnectTest {
 
   private ConsoleClient850 client1;
   private ConsoleClient850 client2;
   private ConsoleClient850 client3;
   private ConsoleClient850 client4;
+  private ConsoleClient850 client5;
+  private ConsoleClient850 client6;
+  private ConsoleClient850 client7;
+  private ConsoleClient850 client8;
   private Requester requester;
   private String host;
   private String port;
 
 
-  @DataProvider(name = "Int128s")
-  public Object[][] getInt128s() {
-    return new Object[][]{
-        {"Test850.Dev1.Energy.Ep", "VolcanoMicrologic1/MMTR1.TotWh.actVal", "ST"},
-        {"Test850.Dev1.Energy.Eq", "VolcanoMicrologic1/MMTR1.TotVArh.actVal", "ST"},
-        {"Test850.Dev1.Energy.Es", "VolcanoMicrologic1/MMTR1.TotVAh.actVal", "ST"},
-        {"Test850.Dev1.Energy.EpOut", "VolcanoMicrologic1/MMTR1.SupWh.actVal", "ST"},
-        {"Test850.Dev1.Energy.EqOut", "VolcanoMicrologic1/MMTR1.SupVArh.actVal", "ST"},
-        {"Test850.Dev1.Energy.EpIn", "VolcanoMicrologic1/MMTR1.DmdWh.actVal", "ST"},
-        {"Test850.Dev1.Energy.EqIn", "VolcanoMicrologic1/MMTR1.DmdVArh.actVal", "ST"},
-        {"Test850.Dev2.Energy.Ep", "VolcanoMicrologic2/MMTR1.TotWh.actVal", "ST"},
-        {"Test850.Dev2.Energy.Eq", "VolcanoMicrologic2/MMTR1.TotVArh.actVal", "ST"},
-        {"Test850.Dev2.Energy.Es", "VolcanoMicrologic2/MMTR1.TotVAh.actVal", "ST"},
-        {"Test850.Dev2.Energy.EpOut", "VolcanoMicrologic2/MMTR1.SupWh.actVal", "ST"},
-        {"Test850.Dev2.Energy.EqOut", "VolcanoMicrologic2/MMTR1.SupVArh.actVal", "ST"},
-        {"Test850.Dev2.Energy.EpIn", "VolcanoMicrologic2/MMTR1.DmdWh.actVal", "ST"},
-        {"Test850.Dev2.Energy.EqIn", "VolcanoMicrologic2/MMTR1.DmdVArh.actVal", "ST"},
-        {"Test850.Dev3.Energy.Ep", "VolcanoMicrologic3/MMTR1.TotWh.actVal", "ST"},
-        {"Test850.Dev3.Energy.Eq", "VolcanoMicrologic3/MMTR1.TotVArh.actVal", "ST"},
-        {"Test850.Dev3.Energy.Es", "VolcanoMicrologic3/MMTR1.TotVAh.actVal", "ST"},
-        {"Test850.Dev3.Energy.EpOut", "VolcanoMicrologic3/MMTR1.SupWh.actVal", "ST"},
-        {"Test850.Dev3.Energy.EqOut", "VolcanoMicrologic3/MMTR1.SupVArh.actVal", "ST"},
-        {"Test850.Dev3.Energy.EpIn", "VolcanoMicrologic3/MMTR1.DmdWh.actVal", "ST"},
-        {"Test850.Dev3.Energy.EqIn", "VolcanoMicrologic3/MMTR1.DmdVArh.actVal", "ST"}
-    };
-  }
 
   @DataProvider(name = "Floats")
   public Object[][] getFloats() {
@@ -157,15 +135,35 @@ public class MultipleClients850Test {
     client2 = new ConsoleClient850();
     client3 = new ConsoleClient850();
     client4 = new ConsoleClient850();
+    client5 = new ConsoleClient850();
+    client6 = new ConsoleClient850();
+    client7 = new ConsoleClient850();
+    client8 = new ConsoleClient850();
     requester = new Requester();
     client1.connect(host);
     client2.connect(host);
     client3.connect(host);
     client4.connect(host);
+    client5.connect(host);
+    client6.connect(host);
+    client7.connect(host);
+    client8.connect(host);
     client1.retrieveServerModelFromServer();
     client2.retrieveServerModelFromServer();
     client3.retrieveServerModelFromServer();
     client4.retrieveServerModelFromServer();
+    client5.retrieveServerModelFromServer();
+    client6.retrieveServerModelFromServer();
+    client7.retrieveServerModelFromServer();
+    client8.retrieveServerModelFromServer();
+    System.out.println("Client HASH " + client1.hashCode() + " ---- " + client1.getClass());
+    System.out.println("Client HASH " + client2.hashCode() + " ---- " + client2.getClass());
+    System.out.println("Client HASH " + client3.hashCode() + " ---- " + client3.getClass());
+    System.out.println("Client HASH " + client4.hashCode() + " ---- " + client4.getClass());
+    System.out.println("Client HASH " + client5.hashCode() + " ---- " + client5.getClass());
+    System.out.println("Client HASH " + client6.hashCode() + " ---- " + client6.getClass());
+    System.out.println("Client HASH " + client7.hashCode() + " ---- " + client7.getClass());
+    System.out.println("Client HASH " + client8.hashCode() + " ---- " + client8.getClass());
   }
 
   @AfterMethod
@@ -174,6 +172,10 @@ public class MultipleClients850Test {
     client2.disconnect();
     client3.disconnect();
     client4.disconnect();
+    client8.disconnect();
+    client5.disconnect();
+    client6.disconnect();
+    client7.disconnect();
   }
 
   @Test(dataProvider = "Floats")
@@ -188,14 +190,35 @@ public class MultipleClients850Test {
       Float iecValue2 = (Float) client2.readFloat(iecRef, fc);
       Float iecValue3 = (Float) client3.readFloat(iecRef, fc);
       Float iecValue4 = (Float) client4.readFloat(iecRef, fc);
+      Float iecValue5 = (Float) client5.readFloat(iecRef, fc);
+      Float iecValue6 = (Float) client6.readFloat(iecRef, fc);
+      Float iecValue7 = (Float) client7.readFloat(iecRef, fc);
+      Float iecValue8 = (Float) client8.readFloat(iecRef, fc);
       Float restValue = actualVar.getFloat("v");
       Assert.assertEquals(restValue, iecValue1);
       Assert.assertEquals(restValue, iecValue2);
       Assert.assertEquals(restValue, iecValue3);
       Assert.assertEquals(restValue, iecValue4);
+      Assert.assertEquals(restValue, iecValue5);
+      Assert.assertEquals(restValue, iecValue6);
+      Assert.assertEquals(restValue, iecValue7);
+      Assert.assertEquals(restValue, iecValue8);
+      System.out.println("#########FLOAT###############" + iecValue1 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue2 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue3 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue4 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue5 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue6 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue7 + " ---- " + restValue);
+      System.out.println("#########FLOAT###############" + iecValue8 + " ---- " + restValue);
+      for (int i = 0; i < 100; i++){
+        randomFloat = (rand.nextFloat() * 999999F) + 1000F;
+        requester.setValue(host, port, dbVarRef, randomFloat);
+      }
     } catch (Exception ex) {
       System.out.println("Exception ex " + ex);
     }
   }
 }
+
 

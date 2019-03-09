@@ -5,7 +5,7 @@
     <parameter name="host" value="192.168.1.223"/>
     <parameter name="port" value="8081"/>
     <classes>
-      <class name="MultipleClients850Test"/>
+      <class name="ReportsMeasuresTest"/>
 
     </classes>
   </test>
